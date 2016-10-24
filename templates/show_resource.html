@@ -1,6 +1,18 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in %}
+    <script>
+    function test(){
+      var table = document.getElementById("resouce");
+      for(var i=1; i<table.rows.length; i++){
+        alert(table.rows[i].cells[0].innerText);
+      }
+    }
+    function edit(item){
+      alert("Johnson test");
+      alert(item);
+    }
+    </script>
     <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <dl>
         <dt>原料名:
@@ -18,7 +30,7 @@
     </form>
     <form action="{{ url_for('edit_entry') }}" method=post class=add-entry>
       <dl>
-        <dt>id:
+        <dt>序号:
         <dd><input type=text size=30 name=id>
         <dt>原料名:
         <dd><input type=text size=30 name=name>
@@ -30,12 +42,13 @@
         <dd><input type=text size=30 name=expire_date>
         <dt>存放方式:
         <dd><input type=text size=30 name=storage>      
-        <dd><input type=submit value="put">
+        <dd><input type=submit value=Edit>
       </dl>
     </form>
   {% endif %}
-  <table>
+  <table id=resouce>
     <tr>
+      <th>序号</th>
       <th>原料名</th>
       <th>品牌</th>
       <th>数量</th>
@@ -50,7 +63,14 @@
       <td>{{ item.quantity }}</td>
       <td>{{ item.expire_date }}</td>
       <td>{{ item.storage }}</td>
-      <td><input type=submit value=Delete>
+      <td>
+        <form action="{{ url_for('delete_entry') }}" method=post>
+        <!-- <input type=submit value=Delete onclick="test()"> -->
+              <input type=hidden name=id value={{ item.id }}>
+              <input type=submit value=Delete>
+        </form>
+      </td>
+      <td><input type=submit value=Edit onclick="edit({{ item.id }})"></td>
     </tr>
   {% else %}
     <tr>Unbelievable.  No entries here so far</tr>

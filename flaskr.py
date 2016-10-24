@@ -57,7 +57,7 @@ def add_entry():
 	flash('New entry was successfully posted')
 	return redirect(url_for('show_entries'))
 
-@app.route('/edit', methods=['PUT'])
+@app.route('/edit', methods=['POST'])
 def edit_entry():
 	if not session.get('logged_in'):
 		abort(401)
@@ -72,6 +72,17 @@ def edit_entry():
 	db.execute('update resource_list set name = "%s", brand = "%s", quantity = "%s", expire_date = "%s", storage = "%s" where id = "%s"' %(name, brand, quantity, expire_date, storage, item_id))
 	db.commit()
 	flash('Edit entry was successfully')
+	return redirect(url_for('show_entries'))
+
+@app.route('/delete', methods=['POST'])
+def delete_entry():
+	if not session.get('logged_in'):
+		abort(401)
+	db = get_db()
+	item_id = request.form['id']
+	db.execute('delete from resource_list where id = "%s"' %item_id)
+	db.commit()
+	flash('Delete %s entry successfully' %item_id)
 	return redirect(url_for('show_entries'))
 
 @app.route('/login', methods=['GET', 'POST'])
