@@ -24,7 +24,9 @@
         <dt>有效期:
         <dd><input type=text size=30 name=expire_date>
         <dt>存放方式:
-        <dd><input type=text size=30 name=storage>      
+        <dd><input type=text size=30 name=storage> 
+        <dt>单价:
+        <dd><input type=text size=30 name=price>     
         <dd><input type=submit value=Add>
       </dl>
     </form>
@@ -41,7 +43,9 @@
         <dt>有效期:
         <dd><input type=text size=30 name=expire_date>
         <dt>存放方式:
-        <dd><input type=text size=30 name=storage>      
+        <dd><input type=text size=30 name=storage>
+        <dt>单价:
+        <dd><input type=text size=30 name=price>      
         <dd><input type=submit value=Edit>
       </dl>
     </form>
@@ -54,6 +58,7 @@
       <th>数量</th>
       <th>有效期</th>
       <th>存放方式</th>
+      <th>单价</th>
     </tr>
   {% for item in resource %}
     <tr>
@@ -63,6 +68,7 @@
       <td>{{ item.quantity }}</td>
       <td>{{ item.expire_date }}</td>
       <td>{{ item.storage }}</td>
+      <td>{{ item.price }}</td>
       <td>
         <form action="{{ url_for('delete_entry') }}" method=post>
         <!-- <input type=submit value=Delete onclick="test()"> -->

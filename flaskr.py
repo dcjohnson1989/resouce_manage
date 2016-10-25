@@ -37,8 +37,8 @@ def teardown_request(exception):
 
 @app.route('/')
 def show_entries():
-	cur = g.db.execute('select id, name, brand, quantity, expire_date, storage from resource_list order by id desc')
-	resource = [dict(id=row[0], name=row[1], brand=row[2], quantity=row[3], expire_date=row[4], storage=row[5]) for row in cur.fetchall()]
+	cur = g.db.execute('select id, name, brand, quantity, expire_date, storage, price from resource_list order by id desc')
+	resource = [dict(id=row[0], name=row[1], brand=row[2], quantity=row[3], expire_date=row[4], storage=row[5], price=row[6]) for row in cur.fetchall()]
 	return render_template('show_resource.html', resource=resource)
 
 @app.route('/add', methods=['POST'])
@@ -51,8 +51,9 @@ def add_entry():
 	quantity = request.form['quantity']
 	expire_date = request.form['expire_date']
 	storage = request.form['storage']
+	price = request.form['price']
 
-	db.execute('insert into resource_list (name, brand, quantity, expire_date, storage) values (?, ?, ?, ?, ?)', [name, brand, quantity, expire_date, storage])
+	db.execute('insert into resource_list (name, brand, quantity, expire_date, storage, price) values (?, ?, ?, ?, ?, ?)', [name, brand, quantity, expire_date, storage, price])
 	db.commit()
 	flash('New entry was successfully posted')
 	return redirect(url_for('show_entries'))
@@ -68,8 +69,9 @@ def edit_entry():
 	quantity = request.form['quantity']
 	expire_date = request.form['expire_date']
 	storage = request.form['storage']
+	price = request.form['price']
 
-	db.execute('update resource_list set name = "%s", brand = "%s", quantity = "%s", expire_date = "%s", storage = "%s" where id = "%s"' %(name, brand, quantity, expire_date, storage, item_id))
+	db.execute('update resource_list set name = "%s", brand = "%s", quantity = "%s", expire_date = "%s", storage = "%s", price = "%s" where id = "%s"' %(name, brand, quantity, expire_date, storage, price, item_id))
 	db.commit()
 	flash('Edit entry was successfully')
 	return redirect(url_for('show_entries'))

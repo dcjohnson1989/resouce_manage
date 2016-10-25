@@ -5,5 +5,10 @@ create table resource_list (
 	brand char not null,
 	quantity integer not null,
 	expire_date datetime not null,
-	storage char not null
+	storage char not null,
+	price real not null
 );
+-- create table resource_price (
+-- 	id integer not null,
+-- 	price real not null
+-- );
