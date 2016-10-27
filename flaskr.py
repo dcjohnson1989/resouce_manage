@@ -87,6 +87,15 @@ def delete_entry():
 	flash('Delete %s entry successfully' %item_id)
 	return redirect(url_for('show_entries'))
 
+@app.route('/calculate', methods=['GET'])
+def calculate_entry():
+	if not session.get('logged_in'):
+		abort(401)
+	cur = g.db.execute('select id, name, brand, price from resource_list order by id desc')
+	resource_list = [dict(id=row[0], name=row[1], brand=row[2], price=row[3]) for row in cur.fetchall()]
+	print resource_list
+	return render_template('calculate_price.html', resource_list=resource_list)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
