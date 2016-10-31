@@ -96,6 +96,26 @@ def calculate_entry():
 	print resource_list
 	return render_template('calculate_price.html', resource_list=resource_list)
 
+@app.route('/add_recipe', methods= ['POST'])
+def add_recipe():
+	if not session.get('logged_in'):
+		abort(401)
+	db = get_db()
+	dessert = request.form['dessert']
+	resource_list = request.form.getlist('resource_list')
+	quantity_list = request.form.getlist('quantity')
+	for i in range(len(resource_list)):
+		db.execute('insert into recipe_list (dessert, resource_id, quantity) values (?, ?, ?)', [dessert, resource_list[i], quantity_list[i]])
+		db.commit()
+	flash('Add Dessert %s recipe successfully' %dessert)
+	return redirect(url_for('show_recipe'))
+
+@app.route('/show_recipe', methods = ['GET'])
+def show_recipe():
+	cur = g.db.execute('select resource_list.id, resource_list.name, resource_list.brand, resource_list.price, recipe_list.dessert, recipe_list.quantity from resource_list inner join recipe_list on  resource_list.id = recipe_list.resource_id')
+	recipe_list = [dict(id=row[0], name=row[1], brand=row[2], price=row[3], dessert=row[4], quantity=row[5]) for row in cur.fetchall()]
+	return render_template('show_recipe.html', recipe_list = recipe_list)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None

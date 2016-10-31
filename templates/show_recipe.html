@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block body %} 
+  <table id=recipe>
+    <tr>
+      <th>序号</th>
+      <th>原料名</th>
+      <th>品牌</th>
+      <th>单价</th>
+      <th>甜品</th>
+      <th>用量</th>
+      <th>合计</th>
+    </tr>
+  {% for item in recipe_list %}
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.name }}</td>
+      <td>{{ item.brand }}</td>
+      <td>{{ item.price }}</td>
+      <td>{{ item.dessert }}</td>
+      <td>{{ item.quantity }}</td>
+      <td></td>
+    </tr>
+  {% else %}
+    <tr>Unbelievable.  No entries here so far</tr>
+  {% endfor %}
+  </table>
+  <div>
+    <h2>总计：</h2>
+    <span name="total_cost" id="total"></span>
+  </div>
+  <script type="text/javascript">
+    function calculator(){
+      var table = document.getElementById("recipe");
+      var total_price = 0;
+      for(var i=1; i<table.rows.length; i++){
+        var price = table.rows[i].cells[3].innerText;
+        var quantity = table.rows[i].cells[5].innerText;
+        var item_price = parseFloat(price)*parseInt(quantity);
+        table.rows[i].cells[6].innerText = item_price;
+        total_price = total_price + item_price;
+      }
+      document.getElementById("total").innerText = total_price.toFixed(2);
+    }
+    calculator()
+  </script>
+{% endblock %}
