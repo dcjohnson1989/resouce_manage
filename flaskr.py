@@ -113,7 +113,17 @@ def add_recipe():
 @app.route('/show_recipe', methods = ['GET'])
 def show_recipe():
 	cur = g.db.execute('select resource_list.id, resource_list.name, resource_list.brand, resource_list.price, recipe_list.dessert, recipe_list.quantity from resource_list inner join recipe_list on  resource_list.id = recipe_list.resource_id')
-	recipe_list = [dict(id=row[0], name=row[1], brand=row[2], price=row[3], dessert=row[4], quantity=row[5]) for row in cur.fetchall()]
+	query_result = [dict(id=row[0], name=row[1], brand=row[2], price=row[3], dessert=row[4], quantity=row[5]) for row in cur.fetchall()]
+	recipe_list = dict()
+	for i in query_result:
+		dessert_value = i.get('dessert') 
+		i.pop('dessert')
+		if dessert_value in recipe_list:
+			recipe_list[dessert_value].append(i)
+			print "test"
+		else:
+			recipe_list.update({dessert_value:[i]})
+	print recipe_list
 	return render_template('show_recipe.html', recipe_list = recipe_list)
 
 @app.route('/login', methods=['GET', 'POST'])
