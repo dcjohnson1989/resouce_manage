@@ -87,22 +87,13 @@ def delete_entry():
 	flash('Delete %s entry successfully' %item_id)
 	return redirect(url_for('show_entries'))
 
-@app.route('/calculate', methods=['GET'])
-def calculate_entry():
-	if not session.get('logged_in'):
-		abort(401)
-	cur = g.db.execute('select id, name, brand, price from resource_list order by id desc')
-	resource_list = [dict(id=row[0], name=row[1], brand=row[2], price=row[3]) for row in cur.fetchall()]
-	print resource_list
-	return render_template('calculate_price.html', resource_list=resource_list)
-
 @app.route('/add_recipe', methods= ['POST'])
 def add_recipe():
 	if not session.get('logged_in'):
 		abort(401)
 	db = get_db()
 	dessert = request.form['dessert']
-	resource_list = request.form.getlist('resource_list')
+	resource_list = request.form.getlist('option_list')
 	quantity_list = request.form.getlist('quantity')
 	for i in range(len(resource_list)):
 		db.execute('insert into recipe_list (dessert, resource_id, quantity) values (?, ?, ?)', [dessert, resource_list[i], quantity_list[i]])
@@ -116,6 +107,7 @@ def show_recipe():
 	query_result = [dict(id=row[0], name=row[1], brand=row[2], price=row[3], dessert=row[4], quantity=row[5]) for row in cur.fetchall()]
 	recipe_list = dict()
 	for i in query_result:
+		print i
 		dessert_value = i.get('dessert') 
 		i.pop('dessert')
 		if dessert_value in recipe_list:
@@ -123,8 +115,10 @@ def show_recipe():
 			print "test"
 		else:
 			recipe_list.update({dessert_value:[i]})
-	print recipe_list
-	return render_template('show_recipe.html', recipe_list = recipe_list)
+	cur = g.db.execute('select id, name, brand, price from resource_list order by id desc')
+	option_list = [dict(id=row[0], name=row[1], brand=row[2], price=row[3]) for row in cur.fetchall()]
+	print option_list
+	return render_template('show_recipe.html', recipe_list = recipe_list, option_list= option_list)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

@@ -13,7 +13,7 @@
     var rowCount = table.rows.length;
     var row = table.insertRow(rowCount);
     var cell1 = row.insertCell(0);
-    cell1.innerHTML="<select name = \"resource_list\" onchange=\"test(this)\">{% for item in resource_list %}<option value=\"{{ item.id }}\" price=\"{{ item.price }}\">{{ item.id }} {{ item.brand }} {{ item.name }}</option>{% endfor %}</select>";
+    cell1.innerHTML="<select name = \"option_list\" onchange=\"test(this)\">{% for item in option_list %}<option value=\"{{ item.id }}\" price=\"{{ item.price }}\">{{ item.id }} {{ item.brand }} {{ item.name }}</option>{% endfor %}</select>";
     var cell2 = row.insertCell(1);
     cell2.innerHTML="<input type=text size=10 name=\"quantity\">"
     var cell3 = row.insertCell(2);
@@ -32,8 +32,8 @@
   </tr>
   <tr>
     <td>
-      <select name = "resource_list" onchange="test(this)">
-        {% for item in resource_list %}
+      <select name = "option_list" onchange="test(this)">
+        {% for item in option_list %}
           <option value="{{ item.id }}" price="{{ item.price }}">{{ item.id }} {{ item.brand }} {{ item.name }}</option>
         {% endfor %}
       </select>
@@ -51,7 +51,7 @@
   </form>
  {% for key in recipe_list %}
  <h2>{{ key }}</h2>
-  <table id=recipe>
+  <table name=recipe_list>
     <tr>
       <th>序号</th>
       <th>原料名</th>
@@ -73,23 +73,26 @@
     <tr>Unbelievable.  No entries here so far</tr>
   {% endfor %}
   </table>
-  {% endfor %}
   <div>
     <h2>总计：</h2>
     <span name="total"></span>
   </div>
+  {% endfor %}
   <script type="text/javascript">
     function calculator(){
-      var table = document.getElementById("recipe");
-      var total_price = 0;
-      for(var i=1; i<table.rows.length; i++){
-        var price = table.rows[i].cells[3].innerText;
-        var quantity = table.rows[i].cells[4].innerText;
-        var item_price = parseFloat(price)*parseInt(quantity);
-        table.rows[i].cells[5].innerText = item_price;
-        total_price = total_price + item_price;
-      }
-      document.getElementsByName("total")[0].innerText = total_price.toFixed(2);
+      var tables = document.getElementsByName("recipe_list");
+      for (var j=0; j<tables.length; j++){
+        var total_price = 0;
+        var table = tables[j]
+        for(var i=1; i<table.rows.length; i++){
+          var price = table.rows[i].cells[3].innerText;
+          var quantity = table.rows[i].cells[4].innerText;
+          var item_price = parseFloat(price)*parseInt(quantity);
+          table.rows[i].cells[5].innerText = item_price;
+          total_price = total_price + item_price;
+        }
+        document.getElementsByName("total")[j].innerText = total_price.toFixed(2);
+    }
     }
     calculator()
   </script>
