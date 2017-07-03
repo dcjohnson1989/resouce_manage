@@ -15,9 +15,15 @@
     var cell1 = row.insertCell(0);
     cell1.innerHTML="<select name = \"option_list\" onchange=\"test(this)\">{% for item in option_list %}<option value=\"{{ item.id }}\" price=\"{{ item.price }}\">{{ item.id }} {{ item.brand }} {{ item.name }}</option>{% endfor %}</select>";
     var cell2 = row.insertCell(1);
-    cell2.innerHTML="<input type=text size=10 name=\"quantity\">"
+    cell2.innerHTML="<input type=text size=10 name=\"quantity\">";
     var cell3 = row.insertCell(2);
-    cell3.innerHTML="<p name=\"total_price\"></p>"
+    cell3.innerHTML="<p name=\"total_price\"></p>";
+    var cell4 = row.insertCell(3);
+    cell4.innerHTML="<button onclick=\"deleteRow(this)\">delete</button>";
+  }
+  function deleteRow(r){
+    var i=r.parentNode.parentNode.rowIndex
+    document.getElementById('recipe').deleteRow(i)
   }
   </script>
   <button id='add' onclick="add_row()">Add</button>
@@ -44,6 +50,9 @@
     <td>
       <p name="total_price"></p>
     </td>
+    <td>
+      <button onclick="deleteRow(this)">delete</button>
+    </td>
   </tr>
   <!-- <input type=submit onclick="test()"> -->
   </table>
@@ -51,6 +60,7 @@
   </form>
  {% for key in recipe_list %}
  <h2>{{ key }}</h2>
+ <button>Edit</button>
   <table name=recipe_list>
     <tr>
       <th>序号</th>

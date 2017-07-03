@@ -1,4 +1,5 @@
 import sqlite3
+import json
 
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 
@@ -39,7 +40,7 @@ def teardown_request(exception):
 def show_entries():
 	cur = g.db.execute('select id, name, brand, quantity, expire_date, storage, price from resource_list order by id desc')
 	resource = [dict(id=row[0], name=row[1], brand=row[2], quantity=row[3], expire_date=row[4], storage=row[5], price=row[6]) for row in cur.fetchall()]
-	return render_template('show_resource.html', resource=resource)
+	return render_template('show_resource.html', resource=json.dumps(resource, ensure_ascii=False))
 
 @app.route('/add', methods=['POST'])
 def add_entry():
