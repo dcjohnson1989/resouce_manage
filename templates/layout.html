@@ -2,10 +2,16 @@
 <title>Resource</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='calendarview.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='head_style.css') }}">
 <script src="{{ url_for('static', filename='js/calendarview.js') }}"></script>
 <script src="{{ url_for('static', filename='js/prototype.js') }}"></script>
+
 <div class=page>
   <h1>Resource Manage System</h1>
+  <ul class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li><a href="show_recipe">Recipe</a></li>
+  </ul>
   <div class=metanav>
   {% if not session.logged_in %}
     <a href="{{ url_for('login') }}">log in</a>
