@@ -25,6 +25,16 @@
     var i=r.parentNode.parentNode.rowIndex
     document.getElementById('recipe').deleteRow(i)
   }
+  
+  var modal = document.getElementById('myModal');
+  function editrecipe(){
+    modal.style.display = "block";
+  }
+  var span = document.getElementsByClassName("close")[0];
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+
   </script>
   <button id='add' onclick="add_row()">Add</button>
   <form action="{{ url_for('add_recipe') }}" method=post class=add-entry>
@@ -60,7 +70,7 @@
   </form>
  {% for key in recipe_list %}
  <h2>{{ key }}</h2>
- <button>Edit</button>
+ <button onclick="editrecipe()">Edit</button>
   <table name=recipe_list>
     <tr>
       <th>序号</th>
@@ -87,12 +97,33 @@
     <h2>总计：</h2>
     <span name="total"></span>
   </div>
+  <div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <form action="{{ url_for('edit_recipe') }}" method=post class=add-entry>
+        <dl>
+          <dt>序号:
+          <dd><input type=text size=30 name=id id=id>
+          <dt>原料名:
+          <dd><input type=text size=30 name=name id=name>
+          <dt>品牌:
+          <dd><input type=text size=30 name=brand id=brand>
+          <dt>用量:
+          <dd><input type=text size=30 name=quantity id=quantity>
+          <dt>单价:
+          <dd><input type=text size=30 name=price id=price>      
+          <dd><input type=submit value=Edit>
+        </dl>
+      </form>
+    </div>
+  </div>
   {% endfor %}
   <script type="text/javascript">
     function calculator(){
       var tables = document.getElementsByName("recipe_list");
+      var total_price = 0;
       for (var j=0; j<tables.length; j++){
-        var total_price = 0;
         var table = tables[j]
         for(var i=1; i<table.rows.length; i++){
           var price = table.rows[i].cells[3].innerText;

@@ -102,6 +102,20 @@ def add_recipe():
 	flash('Add Dessert %s recipe successfully' %dessert)
 	return redirect(url_for('show_recipe'))
 
+@app.route('/edit_recipe', methods=['POST'])
+def edit_recipe():
+	if not session.get('logged_in'):
+		abort(401)
+	db = get_db()
+	dessert = request.form['dessert']
+	resource_list = request.form.getlist('option_list')
+	quantity_list = request.form.getlist('quantity')
+	for i in range(len(resource_list)):
+		db.execute('update recipe_list set resource_id = "%s", quantity = "%s" where dessert = "%s"' %(resource_list[i], quantity_list[i], dessert))
+		db.commit()
+	flash('edit Dessert %s recipe successfully' %dessert)
+	return redirect(url_for('show_recipe'))
+
 @app.route('/show_recipe', methods = ['GET'])
 def show_recipe():
 	cur = g.db.execute('select resource_list.id, resource_list.name, resource_list.brand, resource_list.price, recipe_list.dessert, recipe_list.quantity from resource_list inner join recipe_list on  resource_list.id = recipe_list.resource_id')

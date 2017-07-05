@@ -1,7 +1,28 @@
 {% extends "layout.html" %}
 {% block body %}
   {% if session.logged_in %}
-    <script>
+    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+      <dl>
+        <dt>原料名:
+        <dd><input type=text size=30 name=name>
+        <dt>品牌:
+        <dd><input type=text size=30 name=brand>
+        <dt>数量:
+        <dd><input type=text size=30 name=quantity>
+        <dt>有效期:
+        <dd>
+        <input type="text" size=30 name="expire_date" id="date" />
+        <input type="button" id="calendarButton" value="Show Calendar" /> 
+        <dt>存放方式:
+        <dd><input type=text size=30 name=storage> 
+        <dt>单价:
+        <dd><input type=text size=30 name=price>   
+        <dd><input type=submit value=Add>
+      </dl>
+    </form>
+  {% endif %}
+  <!-- <button onclick="test()">Show all</button> -->
+  <script>
     function test(){
       var table = document.getElementById("resource");
       var resource_json = {{ resource|safe }};
@@ -9,8 +30,14 @@
         var resource_string = JSON.stringify(resource_json[i]);
         var button = document.createElement("button");
         button.innerHTML = "Edit";
+        // button.onclick = (function(opt){
+        //   return function(){
+        //     edit(opt);
+        //   };
+        // })(resource_string);
+        button.data = resource_string;
         button.onclick = function(){
-          edit(resource_string);
+          edit(this.data);
         }
         var line = document.createElement("tr");
         line.innerHTML += '<td>' + resource_json[i].id +
@@ -26,6 +53,7 @@
         table.appendChild(line);
       // <td><input type=submit value=Edit onclick="edit({{ item|safe }})"></td>
       }
+
     }
 
     function edit(data){
@@ -40,30 +68,13 @@
       document.getElementById("storage").value = resource_json.storage;
       document.getElementById("price").value = resource_json.price;
     }
-    // function test_func(data) {
-    //     console.log(data);
-    // }
-    // test_func({{ resource|safe }})
-    </script>
-    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
-      <dl>
-        <dt>原料名:
-        <dd><input type=text size=30 name=name>
-        <dt>品牌:
-        <dd><input type=text size=30 name=brand>
-        <dt>数量:
-        <dd><input type=text size=30 name=quantity>
-        <dt>有效期:
-        <dd><input type=text size=30 name=expire_date>
-        <dt>存放方式:
-        <dd><input type=text size=30 name=storage> 
-        <dt>单价:
-        <dd><input type=text size=30 name=price>     
-        <dd><input type=submit value=Add>
-      </dl>
-    </form>
-  {% endif %}
-  <!-- <button onclick="test()">Show all</button> -->
+    window.onload = function() {
+         Calendar.setup({
+           dateField      : 'date',
+           triggerElement : 'calendarButton'
+         })
+    }
+  </script>
   <table id=resource>
     <tr>
       <th>序号</th>
