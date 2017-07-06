@@ -4,9 +4,10 @@ create table resource_list (
 	name char not null,
 	brand char not null,
 	quantity integer not null,
+	import_date datetime not null,
 	expire_date datetime not null,
 	storage char not null,
-	price real not null
+	total_price real not null
 );
 create table recipe_list (
 	dessert char not null,

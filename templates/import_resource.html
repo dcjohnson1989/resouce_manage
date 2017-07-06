@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+<script type="text/javascript">
+	window.onload = function() {
+         Calendar.setup({
+           dateField      : 'date',
+           triggerElement : 'calendarButton'
+         })
+    }
+</script>>
+{% if session.logged_in %}
+    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+      <dl>
+        <dt>原料名:
+        <dd><input type=text size=30 name=name>
+        <dt>品牌:
+        <dd><input type=text size=30 name=brand>
+        <dt>数量:
+        <dd><input type=text size=30 name=quantity>
+        <dt>有效期:
+        <dd>
+        <input type="text" size=30 name="expire_date" id="date" />
+        <input type="button" id="calendarButton" value="Show Calendar" /> 
+        <dt>存放方式:
+        <dd><input type=text size=30 name=storage> 
+        <dt>总价:
+        <dd><input type=text size=30 name=total_price>   
+        <dd><input type=submit value=Add>
+      </dl>
+    </form>
+ {% endif %}
+{% endblock %}

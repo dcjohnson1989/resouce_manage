@@ -50,14 +50,15 @@ def add_entry():
 	name = request.form['name']
 	brand =  request.form['brand']
 	quantity = request.form['quantity']
+	import_date = request.form['import_date']
 	expire_date = request.form['expire_date']
 	storage = request.form['storage']
-	price = request.form['price']
+	price = request.form['total_price']
 
-	db.execute('insert into resource_list (name, brand, quantity, expire_date, storage, price) values (?, ?, ?, ?, ?, ?)', [name, brand, quantity, expire_date, storage, price])
+	db.execute('insert into resource_list (name, brand, quantity, import_date, expire_date, storage, total_price) values (?, ?, ?, ?, ?, ?, ?)', [name, brand, quantity, import_date, expire_date, storage, total_price])
 	db.commit()
 	flash('New entry was successfully posted')
-	return redirect(url_for('show_entries'))
+	return render_template('import_resource.html')
 
 @app.route('/edit', methods=['POST'])
 def edit_entry():
