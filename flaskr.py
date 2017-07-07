@@ -42,22 +42,23 @@ def show_entries():
 	resource = [dict(id=row[0], name=row[1], brand=row[2], quantity=row[3], expire_date=row[4], storage=row[5], price=row[6]) for row in cur.fetchall()]
 	return render_template('show_resource.html', resource=json.dumps(resource, ensure_ascii=False))
 
-@app.route('/add', methods=['POST'])
+@app.route('/import_resource', methods=['GET','POST'])
 def add_entry():
 	if not session.get('logged_in'):
 		abort(401)
-	db = get_db()
-	name = request.form['name']
-	brand =  request.form['brand']
-	quantity = request.form['quantity']
-	import_date = request.form['import_date']
-	expire_date = request.form['expire_date']
-	storage = request.form['storage']
-	price = request.form['total_price']
+	if request.method == "POST":	
+		db = get_db()
+		name = request.form['name']
+		brand =  request.form['brand']
+		quantity = request.form['quantity']
+		import_date = request.form['import_date']
+		expire_date = request.form['expire_date']
+		storage = request.form['storage']
+		price = request.form['total_price']
 
-	db.execute('insert into resource_list (name, brand, quantity, import_date, expire_date, storage, total_price) values (?, ?, ?, ?, ?, ?, ?)', [name, brand, quantity, import_date, expire_date, storage, total_price])
-	db.commit()
-	flash('New entry was successfully posted')
+		db.execute('insert into resource_list (name, brand, quantity, import_date, expire_date, storage, total_price) values (?, ?, ?, ?, ?, ?, ?)', [name, brand, quantity, import_date, expire_date, storage, total_price])
+		db.commit()
+		flash('New entry was successfully posted')
 	return render_template('import_resource.html')
 
 @app.route('/edit', methods=['POST'])

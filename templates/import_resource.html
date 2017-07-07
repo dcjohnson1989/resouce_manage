@@ -7,7 +7,30 @@
            triggerElement : 'calendarButton'
          })
     }
-</script>>
+    function add_row(){
+	    var table = document.getElementById("resource");
+	    var rowCount = table.rows.length;
+	    var row = table.insertRow(rowCount);
+	    var cell1 = row.insertCell(0);
+	    cell1.innerHTML="<input type=text size=8 name=row"+rowCount+"[name]>";
+	    var cell2 = row.insertCell(1);
+	    cell2.innerHTML="<input type=text size=8 name=row"+rowCount+"[brand]>";
+	    var cell3 = row.insertCell(2);
+	    cell3.innerHTML="<input type=text size=6 name=row"+rowCount+"[storage]>";
+	    var cell4 = row.insertCell(3);
+	    cell4.innerHTML="<input type=text size=8 name=row"+rowCount+"[expire_date]>";
+	   	var cell5 = row.insertCell(4);
+	    cell5.innerHTML="<input type=text size=6 name=row"+rowCount+"[quantity]>";
+	   	var cell6 = row.insertCell(5);
+	    cell6.innerHTML="<input type=text size=6 name=row"+rowCount+"[resource_price]>";
+	    var cell7 = row.insertCell(6);
+    	cell7.innerHTML="<button onclick=\"deleteRow(this)\">delete</button>";
+	}
+	 function deleteRow(r){
+	    var i=r.parentNode.parentNode.rowIndex
+	    document.getElementById('resource').deleteRow(i)
+	 }
+</script>
 {% if session.logged_in %}
     <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <dl>
@@ -27,6 +50,20 @@
         <dd><input type=text size=30 name=total_price>   
         <dd><input type=submit value=Add>
       </dl>
+    </form>
+    <button onclick="add_row()">Add Row</button>
+    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+    <table id="resource">
+    	<tr>
+	      <th>原料名</th>
+	      <th>品牌</th>
+	      <th>存放</th>
+	      <th>有效期</th>
+	      <th>数量</th>
+	      <th>总价</th>
+      </tr>
+    </table>
+    <input type=submit value=Import>
     </form>
  {% endif %}
 {% endblock %}
