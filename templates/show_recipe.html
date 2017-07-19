@@ -122,9 +122,9 @@
   <script type="text/javascript">
     function calculator(){
       var tables = document.getElementsByName("recipe_list");
-      var total_price = 0;
       for (var j=0; j<tables.length; j++){
         var table = tables[j]
+        var total_price = 0;
         for(var i=1; i<table.rows.length; i++){
           var price = table.rows[i].cells[3].innerText;
           var quantity = table.rows[i].cells[4].innerText;

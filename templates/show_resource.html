@@ -11,8 +11,7 @@
         <dd><input type=text size=30 name=quantity>
         <dt>有效期:
         <dd>
-        <input type="text" size=30 name="expire_date" id="date" />
-        <input type="button" id="calendarButton" value="Show Calendar" /> 
+        <input type="text" id="datepicker">
         <dt>存放方式:
         <dd><input type=text size=30 name=storage> 
         <dt>单价:
@@ -68,12 +67,11 @@
       document.getElementById("storage").value = resource_json.storage;
       document.getElementById("price").value = resource_json.price;
     }
-    window.onload = function() {
-         Calendar.setup({
-           dateField      : 'date',
-           triggerElement : 'calendarButton'
-         })
-    }
+   $( function() {
+
+      $( "#datepicker" ).datepicker();
+
+    } );
   </script>
   <table id=resource>
     <tr>

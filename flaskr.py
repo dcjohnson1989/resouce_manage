@@ -1,7 +1,7 @@
 import sqlite3
 import json
 
-from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
+from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, jsonify
 
 DATABASE = 'resource.db'
 DEBUG = True
@@ -43,7 +43,7 @@ def show_entries():
 	return render_template('show_resource.html', resource=json.dumps(resource, ensure_ascii=False))
 
 @app.route('/import_resource', methods=['GET','POST'])
-def add_entry():
+def import_entry():
 	if not session.get('logged_in'):
 		abort(401)
 	if request.method == "POST":	
@@ -56,10 +56,29 @@ def add_entry():
 		storage = request.form['storage']
 		price = request.form['total_price']
 
-		db.execute('insert into resource_list (name, brand, quantity, import_date, expire_date, storage, total_price) values (?, ?, ?, ?, ?, ?, ?)', [name, brand, quantity, import_date, expire_date, storage, total_price])
+		db.execute('insert into import_list (name, brand, quantity, import_date, expire_date, storage, total_price) values (?, ?, ?, ?, ?, ?, ?)', [name, brand, quantity, import_date, expire_date, storage, total_price])
 		db.commit()
 		flash('New entry was successfully posted')
 	return render_template('import_resource.html')
+
+@app.route('/add', methods=['POST'])
+def add_entry():
+	if not session.get('logged_in'):
+		abort(401)
+	if request.method == "POST":	
+		db = get_db()
+		print "Johnson"
+		name = request.form['name']
+		brand =  request.form['brand']
+		quantity = request.form['quantity']
+		expire_date = request.form['expire_date']
+		storage = request.form['storage']
+		price = request.form['price']
+		print price
+		db.execute('insert into resource_list (name, brand, quantity, expire_date, storage, price) values (?, ?, ?, ?, ?, ?)', [name, brand, quantity, expire_date, storage, price])
+		db.commit()
+		flash('New entry was successfully posted')
+		return redirect(url_for('show_entries'))
 
 @app.route('/edit', methods=['POST'])
 def edit_entry():

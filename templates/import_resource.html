@@ -1,38 +1,73 @@
 {% extends "layout.html" %}
 {% block body %}
 <script type="text/javascript">
-	window.onload = function() {
-         Calendar.setup({
-           dateField      : 'date',
-           triggerElement : 'calendarButton'
-         })
-    }
     function add_row(){
 	    var table = document.getElementById("resource");
 	    var rowCount = table.rows.length;
 	    var row = table.insertRow(rowCount);
 	    var cell1 = row.insertCell(0);
-	    cell1.innerHTML="<input type=text size=8 name=row"+rowCount+"[name]>";
+	    cell1.innerHTML="<input type=text size=8 name=name>";
 	    var cell2 = row.insertCell(1);
-	    cell2.innerHTML="<input type=text size=8 name=row"+rowCount+"[brand]>";
+	    cell2.innerHTML="<input type=text size=8 name=brand>";
 	    var cell3 = row.insertCell(2);
-	    cell3.innerHTML="<input type=text size=6 name=row"+rowCount+"[storage]>";
+	    cell3.innerHTML="<input type=text size=6 name=storage>";
 	    var cell4 = row.insertCell(3);
-	    cell4.innerHTML="<input type=text size=8 name=row"+rowCount+"[expire_date]>";
+	    cell4.innerHTML="<input type=text size=8 name=expire_date>";
 	   	var cell5 = row.insertCell(4);
-	    cell5.innerHTML="<input type=text size=6 name=row"+rowCount+"[quantity]>";
+	    cell5.innerHTML="<input type=text size=6 name=quantity>";
 	   	var cell6 = row.insertCell(5);
-	    cell6.innerHTML="<input type=text size=6 name=row"+rowCount+"[resource_price]>";
+	    cell6.innerHTML="<input type=text size=6 name=resource_price>";
 	    var cell7 = row.insertCell(6);
     	cell7.innerHTML="<button onclick=\"deleteRow(this)\">delete</button>";
 	}
 	 function deleteRow(r){
 	    var i=r.parentNode.parentNode.rowIndex
-	    document.getElementById('resource').deleteRow(i)
+	    document.getElementById('resource').deleteRow(i);
 	 }
+
+	 $(document).ready(function(){
+		 $('#convert-table').click( function() {
+		 var table = document.getElementById('resource');
+		 table_json = tableToJSON(table);
+		 console.log(table_json);
+		 $.ajax({
+		  type: "POST",
+		  contentType: "application/json; charset=utf-8",
+		  url: "/import_resource",
+		  data: table_json,
+		  success: function (data) {
+		    console.log(data.title);
+		    console.log(data.article);
+		  },
+		  dataType: "json"
+		});
+		});
+	});
+
+	 function tableToJSON(table) {
+	  var row, rows = table.rows;
+	  var obj_array = [];
+	  for (var i=1, iLen=rows.length; i<iLen; i++) {
+	    row = rows[i];
+	    var obj = {};
+	    for (var j=0; j<6; j++){
+	    	obj[row.cells[j].children[0].getAttribute("name")] = row.cells[j].children[0].value;
+	    }
+	    obj['import_date'] = document.getElementById('datepicker').value
+	    obj_array.push(obj);
+	  }
+	  return JSON.stringify(obj_array);
+	}
+
+	$( function() {
+
+    	$( "#datepicker" ).datepicker();
+
+  	} );
+
 </script>
 {% if session.logged_in %}
-    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+   <!--  <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <dl>
         <dt>原料名:
         <dd><input type=text size=30 name=name>
@@ -50,10 +85,19 @@
         <dd><input type=text size=30 name=total_price>   
         <dd><input type=submit value=Add>
       </dl>
-    </form>
-    <button onclick="add_row()">Add Row</button>
-    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+    </form> -->
+    
+    <!-- <form action="{{ url_for('import_entry') }}" method=post class=add-entry> -->
+    <div>
+<!--     <input type="text" size=30 name="import_date" id="import_date" />
+        <input type="button" id="calendarButton" value="Show Calendar" /> 
+     </div> -->
+     <p>进货时间: <input type="text" name="import_date" id="datepicker"></p>
+     <div>
+    <button onclick="add_row()">添加原料</button>
+    </div>
     <table id="resource">
+    <thead>
     	<tr>
 	      <th>原料名</th>
 	      <th>品牌</th>
@@ -62,8 +106,12 @@
 	      <th>数量</th>
 	      <th>总价</th>
       </tr>
+      </thead>
+      <tbody>
+	  </tbody>
     </table>
-    <input type=submit value=Import>
-    </form>
+    <button id="convert-table" >Convert!</button>
+    <!-- <input type=submit value=Import> -->
+    <!-- </form> -->
  {% endif %}
 {% endblock %}
