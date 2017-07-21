@@ -46,20 +46,34 @@ def show_entries():
 def import_entry():
 	if not session.get('logged_in'):
 		abort(401)
-	if request.method == "POST":	
-		db = get_db()
-		name = request.form['name']
-		brand =  request.form['brand']
-		quantity = request.form['quantity']
-		import_date = request.form['import_date']
-		expire_date = request.form['expire_date']
-		storage = request.form['storage']
-		price = request.form['total_price']
-
-		db.execute('insert into import_list (name, brand, quantity, import_date, expire_date, storage, total_price) values (?, ?, ?, ?, ?, ?, ?)', [name, brand, quantity, import_date, expire_date, storage, total_price])
+	if request.method == "POST":
+		db = get_db()	
+		data_list = request.get_json()
+		for data in data_list:
+			print data
+			name = data['name']
+			brand =  data['brand']
+			quantity = data['quantity']
+			import_date = data['import_date']
+			expire_date = data['expire_date']
+			storage = data['storage']
+			total_price = data['resource_price']
+			db.execute('insert into import_list (name, brand, quantity, import_date, expire_date, storage, total_price) values (?, ?, ?, ?, ?, ?, ?)', [name, brand, quantity, import_date, expire_date, storage, total_price])
 		db.commit()
 		flash('New entry was successfully posted')
-	return render_template('import_resource.html')
+		return redirect(url_for('import_entry'))
+	elif request.method == "GET":
+		db = get_db()
+		if request.args.get("date") == None:
+			cur = db.execute('select import_date from import_list order by id desc limit 1')
+			expected_date = cur.fetchall()[0][0]
+		else:
+			expected_date = request.args.get("date")
+		print expected_date
+		cur_get = db.execute('select id, name, brand, quantity, import_date, expire_date, storage, total_price from import_list where import_date ="%s"' %expected_date)
+		import_resource = [dict(id=row[0], name=row[1], brand=row[2], quantity=row[3], import_date=row[4], expire_date=row[5], storage=row[6], price=row[7]) for row in cur_get.fetchall()]
+		return render_template('import_resource.html', import_resource=json.dumps(import_resource, ensure_ascii=False))
+
 
 @app.route('/add', methods=['POST'])
 def add_entry():

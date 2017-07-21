@@ -1,6 +1,25 @@
 {% extends "layout.html" %}
 {% block body %}
 <script type="text/javascript">
+	 function test(){
+      var table = document.getElementById("import_history");
+      var resource_json = {{ import_resource|safe }};
+      console.log(resource_json)
+      for(var i=0; i<resource_json.length; i++){
+        var resource_string = JSON.stringify(resource_json[i]);
+        var line = document.createElement("tr");
+        line.innerHTML += '</td> <td>' + resource_json[i].name + 
+                          '</td> <td>' + resource_json[i].brand +
+                          '</td> <td>' + resource_json[i].quantity +
+                          '</td> <td>' + resource_json[i].expire_date +
+                          '</td> <td>' + resource_json[i].storage +
+                          '</td> <td>' + resource_json[i].price +
+                          '</td> <td>' + resource_json[i].import_date +
+                          '</td>'
+        table.appendChild(line);
+      // <td><input type=submit value=Edit onclick="edit({{ item|safe }})"></td>
+      }
+    }
     function add_row(){
 	    var table = document.getElementById("resource");
 	    var rowCount = table.rows.length;
@@ -26,6 +45,13 @@
 	 }
 
 	 $(document).ready(function(){
+		 $('#history_search').click( function() {
+		 var select_date = document.getElementById('select_date').value;
+		 console.log(select_date);
+		 var expected_url = "/import_resource?date=" + select_date
+		 window.location.href = expected_url
+		});
+
 		 $('#convert-table').click( function() {
 		 var table = document.getElementById('resource');
 		 table_json = tableToJSON(table);
@@ -53,7 +79,7 @@
 	    for (var j=0; j<6; j++){
 	    	obj[row.cells[j].children[0].getAttribute("name")] = row.cells[j].children[0].value;
 	    }
-	    obj['import_date'] = document.getElementById('datepicker').value
+	    obj['import_date'] = document.getElementById('import_date').value
 	    obj_array.push(obj);
 	  }
 	  return JSON.stringify(obj_array);
@@ -61,7 +87,13 @@
 
 	$( function() {
 
-    	$( "#datepicker" ).datepicker();
+    	$( "#import_date" ).datepicker();
+
+  	} );
+
+  	$( function() {
+
+    	$( "#select_date" ).datepicker();
 
   	} );
 
@@ -88,11 +120,26 @@
     </form> -->
     
     <!-- <form action="{{ url_for('import_entry') }}" method=post class=add-entry> -->
-    <div>
+    <!-- <div> -->
 <!--     <input type="text" size=30 name="import_date" id="import_date" />
         <input type="button" id="calendarButton" value="Show Calendar" /> 
      </div> -->
-     <p>进货时间: <input type="text" name="import_date" id="datepicker"></p>
+
+	<p>查看历史进货时间: <input type="text" name="select_date" id="select_date"><button id="history_search">查询</button></p>
+
+    <table id=import_history>
+    <tr>
+      <th>原料名</th>
+      <th>品牌</th>
+      <th>数量</th>
+      <th>有效期</th>
+      <th>存放方式</th>
+      <th>价格</th>
+      <th>进货时间</th>
+    </tr>
+
+  </table>
+     <p>进货时间: <input type="text" name="import_date" id="import_date"></p>
      <div>
     <button onclick="add_row()">添加原料</button>
     </div>
@@ -110,8 +157,11 @@
       <tbody>
 	  </tbody>
     </table>
-    <button id="convert-table" >Convert!</button>
+    <button id="convert-table" >提交</button>
     <!-- <input type=submit value=Import> -->
     <!-- </form> -->
+    <script type="text/javascript">
+    	test()
+    </script>
  {% endif %}
 {% endblock %}
