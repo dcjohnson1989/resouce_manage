@@ -1,5 +1,7 @@
 import sqlite3
 import json
+import datetime
+import dateutil.relativedelta
 
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, jsonify
 
@@ -64,13 +66,15 @@ def import_entry():
 		return redirect(url_for('import_entry'))
 	elif request.method == "GET":
 		db = get_db()
-		if request.args.get("date") == None:
+		if request.args.get("date_start") == None:
 			cur = db.execute('select import_date from import_list order by id desc limit 1')
-			expected_date = cur.fetchall()[0][0]
+			expected_date_end = datetime.datetime.now().strftime('%m/%d/%Y')
+			expected_date_start = (datetime.datetime.now() - dateutil.relativedelta.relativedelta(days=7)).strftime('%m/%d/%Y')
 		else:
-			expected_date = request.args.get("date")
-		print expected_date
-		cur_get = db.execute('select id, name, brand, quantity, import_date, expire_date, storage, total_price from import_list where import_date ="%s"' %expected_date)
+			expected_date_start = request.args.get("date_start")
+			expected_date_end = request.args.get("date_end")
+		print expected_date_start, expected_date_end
+		cur_get = db.execute('select id, name, brand, quantity, import_date, expire_date, storage, total_price from import_list where import_date >="%s" and import_date <="%s"' %(expected_date_start, expected_date_end))
 		import_resource = [dict(id=row[0], name=row[1], brand=row[2], quantity=row[3], import_date=row[4], expire_date=row[5], storage=row[6], price=row[7]) for row in cur_get.fetchall()]
 		return render_template('import_resource.html', import_resource=json.dumps(import_resource, ensure_ascii=False))
 

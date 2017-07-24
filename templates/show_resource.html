@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% if session.logged_in %}
-    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+  
+   <!--  <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <dl>
         <dt>原料名:
         <dd><input type=text size=30 name=name>
@@ -18,8 +18,7 @@
         <dd><input type=text size=30 name=price>   
         <dd><input type=submit value=Add>
       </dl>
-    </form>
-  {% endif %}
+    </form> -->
   <!-- <button onclick="test()">Show all</button> -->
   <script>
     function test(){
@@ -73,6 +72,7 @@
 
     } );
   </script>
+  {% if session.logged_in %}
   <table id=resource>
     <tr>
       <th>序号</th>
@@ -85,6 +85,7 @@
     </tr>
 
   </table>
+  {% endif %}
   <div id="myModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">

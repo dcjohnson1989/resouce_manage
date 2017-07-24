@@ -46,9 +46,11 @@
 
 	 $(document).ready(function(){
 		 $('#history_search').click( function() {
-		 var select_date = document.getElementById('select_date').value;
-		 console.log(select_date);
-		 var expected_url = "/import_resource?date=" + select_date
+		 var date_start = document.getElementById('select_date_start').value;
+		 var date_end = document.getElementById('select_date_end').value;
+		 console.log(date_start);
+		 console.log(date_end);
+		 var expected_url = "/import_resource?date_start=" + date_start + "&date_end=" + date_end
 		 window.location.href = expected_url
 		});
 
@@ -90,10 +92,14 @@
     	$( "#import_date" ).datepicker();
 
   	} );
-
   	$( function() {
 
-    	$( "#select_date" ).datepicker();
+    	$( "#select_date_start" ).datepicker();
+
+  	} );
+  	$( function() {
+
+    	$( "#select_date_end" ).datepicker();
 
   	} );
 
@@ -125,7 +131,8 @@
         <input type="button" id="calendarButton" value="Show Calendar" /> 
      </div> -->
 
-	<p>查看历史进货时间: <input type="text" name="select_date" id="select_date"><button id="history_search">查询</button></p>
+	<p>查看进货历史: <input type="text" name="select_date_start" id="select_date_start"> ~ <input type="text" name="select_date_end" id="select_date_end"></p>
+	<button id="history_search">查询</button>
 
     <table id=import_history>
     <tr>
