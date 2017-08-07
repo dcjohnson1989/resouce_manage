@@ -17,7 +17,7 @@ create table resource_list (
 	-- import_date datetime not null,
 	expire_date datetime not null,
 	storage char not null,
-	total_price real not null
+	price real not null
 );
 create table recipe_list (
 	dessert char not null,

@@ -172,7 +172,7 @@ def show_recipe():
 	cur = g.db.execute('select id, name, brand, price from resource_list order by id desc')
 	option_list = [dict(id=row[0], name=row[1], brand=row[2], price=row[3]) for row in cur.fetchall()]
 	print option_list
-	return render_template('show_recipe.html', recipe_list = recipe_list, option_list= option_list)
+	return render_template('show_recipe.html', recipe_list = json.dumps(recipe_list, ensure_ascii=False), option_list= option_list)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

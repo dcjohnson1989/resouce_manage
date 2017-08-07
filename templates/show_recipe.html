@@ -26,14 +26,58 @@
     document.getElementById('recipe').deleteRow(i)
   }
   
-  var modal = document.getElementById('myModal');
-  function editrecipe(){
-    modal.style.display = "block";
-  }
-  var span = document.getElementsByClassName("close")[0];
-  span.onclick = function() {
-    modal.style.display = "none";
-  }
+  function recipe_list(){
+      var recipe_list_div = document.getElementById("recipe_list");
+      var recipe_list_json = {{ recipe_list|safe }};
+      console.log(recipe_list_json)
+      key_list = Object.keys(recipe_list_json)
+      for(var i=0; i<key_list.length; i++){
+        var recipe_div = document.createElement("div")
+        var recipe_string = JSON.stringify(recipe_list_json[key_list[i]]);
+        recipe_div.innerHTML += '<h2>'+key_list[i]+'</h2>';
+        var table = document.createElement("table");
+        table.setAttribute("name", "recipe_list");
+        var header_line = document.createElement("tr");
+        header_line.innerHTML =       '<tr><th>序号</th>' +
+                                      '<th>原料名</th>' +
+                                      '<th>品牌</th>'+
+                                      '<th>单价</th>'+
+                                      '<th>用量</th>'+
+                                      '<th>合计</th></tr>';
+        table.appendChild(header_line)
+
+        for( var j=0; j<recipe_list_json[key_list[i]].length; j ++){
+          var line = document.createElement("tr");
+          line.innerHTML += '<td>' + recipe_list_json[key_list[i]][j].id +
+                            '</td> <td>' + recipe_list_json[key_list[i]][j].name + 
+                            '</td> <td>' + recipe_list_json[key_list[i]][j].brand +
+                            '</td> <td>' + recipe_list_json[key_list[i]][j].price +
+                            '</td> <td>' + recipe_list_json[key_list[i]][j].quantity +
+                            '</td><td></td>';
+          //                   "<td><form action=\"{{ url_for('delete_entry') }}\" method=post><input  type=hidden name=id value="+recipe_list_json[key_list[i]][j].id+"><input type=submit value=Delete></form></td>"
+          var button_td = document.createElement("td")
+          var button = document.createElement("button");
+          button.innerHTML = "Edit";
+          // var recipe_string = JSON.stringify(recipe_list_json[key_list[i]][j]);
+          // button.data = recipe_string;
+          console.log('Johnson')
+          button.onclick = function(){
+              console.log('Johnson test')
+              editrecipe(this.data);
+          }
+          button_td.appendChild(button);
+          line.appendChild(button_td)
+          table.appendChild(line);
+          }
+        recipe_div.appendChild(table);
+        recipe_div.innerHTML += '<h2>总计：</h2><span name="total"></span>';
+
+        recipe_list_div.appendChild(recipe_div);
+        // 
+      // <td><input type=submit value=Edit onclick="edit({{ item|safe }})"></td>
+      }
+
+    }
 
   </script>
   <button id='add' onclick="add_row()">Add</button>
@@ -68,58 +112,28 @@
   </table>
   <input type=submit value="submit">
   </form>
- {% for key in recipe_list %}
- <h2>{{ key }}</h2>
- <button onclick="editrecipe()">Edit</button>
-  <table name=recipe_list>
-    <tr>
-      <th>序号</th>
-      <th>原料名</th>
-      <th>品牌</th>
-      <th>单价</th>
-      <th>用量</th>
-      <th>合计</th>
-    </tr>
-  {% for item in recipe_list[key] %}
-    <tr>
-      <td>{{ item.id }}</td>
-      <td>{{ item.name }}</td>
-      <td>{{ item.brand }}</td>
-      <td>{{ item.price }}</td>
-      <td>{{ item.quantity }}</td>
-      <td></td>
-    </tr>
-  {% else %}
-    <tr>Unbelievable.  No entries here so far</tr>
-  {% endfor %}
-  </table>
-  <div>
-    <h2>总计：</h2>
-    <span name="total"></span>
-  </div>
+  <div id="recipe_list"></div>
+
   <div id="myModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
       <span class="close">&times;</span>
       <form action="{{ url_for('edit_recipe') }}" method=post class=add-entry>
-        <dl>
-          <dt>序号:
-          <dd><input type=text size=30 name=id id=id>
-          <dt>原料名:
-          <dd><input type=text size=30 name=name id=name>
-          <dt>品牌:
-          <dd><input type=text size=30 name=brand id=brand>
-          <dt>用量:
-          <dd><input type=text size=30 name=quantity id=quantity>
-          <dt>单价:
-          <dd><input type=text size=30 name=price id=price>      
-          <dd><input type=submit value=Edit>
-        </dl>
+         <table id='edit_recipe' name=edit_recipe>
+          <tr>
+            <th>序号</th>
+            <th>原料名</th>
+            <th>品牌</th>
+            <th>单价</th>
+            <th>用量</th>
+            <th>合计</th>
+          </tr>
+      </table>
       </form>
     </div>
   </div>
-  {% endfor %}
   <script type="text/javascript">
+  recipe_list()
     function calculator(){
       var tables = document.getElementsByName("recipe_list");
       for (var j=0; j<tables.length; j++){
@@ -129,12 +143,21 @@
           var price = table.rows[i].cells[3].innerText;
           var quantity = table.rows[i].cells[4].innerText;
           var item_price = parseFloat(price)*parseInt(quantity);
-          table.rows[i].cells[5].innerText = item_price;
+          table.rows[i].cells[5].innerText = item_price.toFixed(2);
           total_price = total_price + item_price;
         }
         document.getElementsByName("total")[j].innerText = total_price.toFixed(2);
     }
     }
     calculator()
+    var modal = document.getElementById('myModal');
+    function editrecipe(data){
+      console.log(data);
+      modal.style.display = "block";
+    }
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
   </script>
 {% endblock %}
