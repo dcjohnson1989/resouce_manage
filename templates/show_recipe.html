@@ -35,6 +35,7 @@
         var recipe_div = document.createElement("div")
         var recipe_string = JSON.stringify(recipe_list_json[key_list[i]]);
         recipe_div.innerHTML += '<h2>'+key_list[i]+'</h2>';
+        recipe_div.innerHTML += "<form action={{ url_for('delete_recipe') }} method=post><input  type=hidden name=dessert value="+key_list[i]+"><input type=submit value=Delete></form>"
         var table = document.createElement("table");
         table.setAttribute("name", "recipe_list");
         var header_line = document.createElement("tr");

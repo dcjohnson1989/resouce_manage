@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   
-   <!--  <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+    <form action="{{ url_for('add_entry') }}" method=post class=add-entry>
       <dl>
         <dt>原料名:
         <dd><input type=text size=30 name=name>
@@ -10,15 +10,14 @@
         <dt>数量:
         <dd><input type=text size=30 name=quantity>
         <dt>有效期:
-        <dd>
-        <input type="text" id="datepicker">
+        <dd><input type="text" name=expire_date id="datepicker">
         <dt>存放方式:
         <dd><input type=text size=30 name=storage> 
         <dt>单价:
         <dd><input type=text size=30 name=price>   
         <dd><input type=submit value=Add>
       </dl>
-    </form> -->
+    </form>
   <!-- <button onclick="test()">Show all</button> -->
   <script>
     function test(){

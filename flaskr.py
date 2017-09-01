@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-  
 import sqlite3
 import json
 import datetime
@@ -153,6 +154,16 @@ def edit_recipe():
 		db.execute('update recipe_list set resource_id = "%s", quantity = "%s" where dessert = "%s"' %(resource_list[i], quantity_list[i], dessert))
 		db.commit()
 	flash('edit Dessert %s recipe successfully' %dessert)
+	return redirect(url_for('show_recipe'))
+
+@app.route('/delete_recipe', methods=['POST'])
+def delete_recipe():
+	if not session.get('logged_in'):
+		abort(401)
+	db = get_db()
+	dessert = request.form['dessert']
+	db.execute('delete from recipe_list where dessert = "%s"' %dessert)
+	flash('delete Dessert %s recipe successfully' %dessert)
 	return redirect(url_for('show_recipe'))
 
 @app.route('/show_recipe', methods = ['GET'])
